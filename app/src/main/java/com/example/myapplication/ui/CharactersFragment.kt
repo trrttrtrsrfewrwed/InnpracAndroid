@@ -1,6 +1,7 @@
 package com.example.myapplication.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +26,8 @@ class CharactersFragment : Fragment(), CharactersAdapter.CharacterItemListener {
     private var rv: Int = 0
     private var isRvSet: Boolean = false
 
+    private var mScrollPosition = -1
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -46,10 +49,18 @@ class CharactersFragment : Fragment(), CharactersAdapter.CharacterItemListener {
         binding.charactersRv.adapter = adapter
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        mScrollPosition = getRv()
+        super.onSaveInstanceState(outState)
+    }
+
     fun getRv(): Int {
-        var mScrollPosition = 0
-        if ( binding.charactersRv.layoutManager != null &&  binding.charactersRv.layoutManager is LinearLayoutManager) {
-            mScrollPosition = (binding.charactersRv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+        if (this::binding.isInitialized) {
+            mScrollPosition = 0
+            if (binding.charactersRv.layoutManager != null && binding.charactersRv.layoutManager is LinearLayoutManager) {
+                mScrollPosition =
+                    (binding.charactersRv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+            }
         }
         return mScrollPosition
     }
